@@ -28,8 +28,3 @@ permissions:
       vanillachatter.admin.setnick: true
       vanillachatter.admin.setcolor: true
       vanillachatter.admin.setprefix: true
-  vanillachatter.admin.mute:
-    description: acces to mute and unmute command
-    children:
-      vanillachatter.admin.mute: true
-      vanillachatter.admin.unmute: true

@@ -1,0 +1,718 @@
+package me.greaperc4.VC;
+
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.command.Command;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.plugin.PluginManager;
+import org.bukkit.plugin.java.JavaPlugin;
+
+public class VanillaChatter extends JavaPlugin implements Listener {
+
+	@Override
+	public void onEnable() {
+
+		this.saveDefaultConfig();
+		
+		this.getLogger().info("is Enabled");
+		PluginManager pm = this.getServer().getPluginManager();
+		pm.registerEvents(this, this);
+		
+		checkplayers();
+	}
+
+	@Override
+	public void onDisable() {
+
+		this.getLogger().info("is Disabled");
+		saveConfig();
+	}
+	
+	public String getcolors(int number) {
+		
+		String sendmessage = "";
+		
+		switch(number) {
+
+		//darkgray
+		case 1:
+			sendmessage = ChatColor.DARK_GRAY + "[player]: " + ChatColor.GRAY + "message";
+			break;
+		//gold
+		case 2:
+			sendmessage = ChatColor.GOLD + "[player]: " + ChatColor.YELLOW + "message";
+			break;
+		//cyan
+		case 3:
+			sendmessage = ChatColor.DARK_AQUA + "[player]: " + ChatColor.AQUA + "message";
+			break;
+		//darkgreen
+		case 4:
+			sendmessage = ChatColor.DARK_GREEN + "[player]: " + ChatColor.GREEN + "message";
+			break;
+		//purple
+		case 5:
+			sendmessage = ChatColor.DARK_PURPLE + "[player]: " + ChatColor.LIGHT_PURPLE + "message";
+			break;
+		//red
+		case 6:
+			sendmessage = ChatColor.DARK_RED+ "[player]: " + ChatColor.RED + "message";
+			break;
+		//white
+		default:
+			sendmessage = ChatColor.WHITE + "[player]: " + "message";
+			break;
+		}
+		
+		return sendmessage;
+	}
+	
+	public String vanillachatter = ChatColor.GOLD + "[" + ChatColor.YELLOW + "VanillaChatter" + ChatColor.GOLD + "]";
+	
+	@Override
+	public boolean onCommand(CommandSender sender, Command cmd, String label, String[] args) {
+		
+		if (sender instanceof Player) {
+			
+			Player player = (Player)sender;
+            if(cmd.getName().equalsIgnoreCase("vanillachatter") || cmd.getName().equalsIgnoreCase("vc")) {
+            	
+                if(args.length == 0) {
+                	
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" Help").append(ChatColor.GRAY).append("-+").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc set <player> <c:|p:|n:>").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Set a different color to the player!").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc clear").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Clears the chat!").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc prefix <true|false>").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Enables or disables the Prefixes!").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc mute|unmute").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Mute or unmute a player!").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc colorlist").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("get the colorlist!").toString());
+                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc help").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Show this screen!").toString());
+                    player.sendMessage((new StringBuilder(String.valueOf(vanillachatter))).append(" v").append(getDescription().getVersion()).append(ChatColor.GRAY).append(" - ").append(ChatColor.GREEN).append("Made by Greaperc4").toString());
+                }
+                
+/** GET THE HELP */
+                
+                if (args.length == 1) {
+                	
+                	if (args[0].equalsIgnoreCase("help")) {
+                		
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" Help").append(ChatColor.GRAY).append("-+").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc set <player> <c:|p:|n:>").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Set a different color to the player!").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc clear").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Clears the chat!").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc prefix <true|false>").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Enables or disables the Prefixes!").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc mute|unmute <player>").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Mute or unmute a player!").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc colorlist").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("get the colorlist!").toString());
+                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("/vc help").append(ChatColor.GRAY).append(" - ").append(ChatColor.YELLOW).append("Show this screen!").toString());
+                        player.sendMessage((new StringBuilder(String.valueOf(vanillachatter))).append(" v").append(getDescription().getVersion()).append(ChatColor.GRAY).append(" - ").append(ChatColor.GREEN).append("Made by Greaperc4").toString());
+                    }
+                	
+/** GET THE COLORLIST */
+                	
+                    if (args[0].equalsIgnoreCase("colorlist")) {
+                    	
+                    	if (player.hasPermission("vanillachatter.admin.colorlist") || player.isOp()) {
+                    	
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.YELLOW).append(" ColorList").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 1: ").append(getcolors(1)).toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 2: ").append(getcolors(2)).toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 3: ").append(getcolors(3)).toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 4: ").append(getcolors(4)).toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 5: ").append(getcolors(5)).toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.YELLOW).append(" 6: ").append(getcolors(6)).toString());
+                    	} else {
+	                		
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You don't have permissions to use this command!").toString());
+	                	}
+                	}
+                    
+/** CLEARS THE CHAT */
+                    
+                    if (args[0].equalsIgnoreCase("clear")) { 
+                    	
+                    	if (sender.hasPermission("vanillachatter.admin.clear") || player.isOp()) {
+                    	
+                    		for (int i = 0; i < 50; i++) {
+                    		
+                    			Bukkit.broadcastMessage("");
+                    		}
+                        	getServer().getConsoleSender().sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("The chat got cleared by ").append(sender.getName()).append("!").toString());
+                    	} else {
+	                		
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You don't have permissions to use this command!").toString());
+	                	}
+                    }
+                }
+                
+                if (args.length >= 1) {
+                
+/** MUTE PLAYER IN CHAT */
+
+	                if(args[0].equalsIgnoreCase("mute")) {
+	                	
+	                	if (player.hasPermission("vanillachatter.admin.mute") || player.isOp()) {
+	                	
+		                    if(args.length == 1) {
+		                    	
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Missing: ").append(ChatColor.GREEN).append("/vc mute ").append(ChatColor.UNDERLINE).append("<player>").toString());
+		                    }
+		                    if (args.length == 2) {
+		                    	
+		                    	try {
+		                        	
+		                            Player target = Bukkit.getServer().getPlayer(args[1]);
+		                            
+		                            if (getConfig().getBoolean("Players." + target.getName() + ".muted")) {
+		
+		                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                player.sendMessage((new StringBuilder().append(ChatColor.GREEN).append(target.getName() + " is already muted!")).toString());
+		                            } else {
+
+				                        getConfig().set("Players." + target.getName() + ".muted", true);
+		                            	saveConfig();
+		                            	target.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                target.sendMessage((new StringBuilder().append(ChatColor.GREEN).append("You have been muted!")).toString());
+		                                
+		                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                player.sendMessage((new StringBuilder().append(ChatColor.GREEN).append(target.getName() + " is now muted!")).toString());
+		                            }
+		                        } catch(NullPointerException ex) {
+		                        	
+		                            player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                            player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Please enter a valid player name!").toString());
+		                        }
+		                    }
+		                    if (args.length >= 3) {
+		
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("To many arguments!").toString());
+		                    }
+	                	} else {
+	                		
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You don't have permissions to use this command!").toString());
+	                	}
+	                }
+                
+/** UNMUTE PLAYER IN CHAT */
+
+	                if(args[0].equalsIgnoreCase("unmute")) {
+	                	
+	                	if (player.hasPermission("vanillachatter.admin.unmute") || player.isOp()) {
+	                	
+		                    if(args.length == 1) {
+		                    	
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Missing: ").append(ChatColor.GREEN).append("/vc unmute ").append(ChatColor.UNDERLINE).append(ChatColor.RED).append("<player>").toString());
+		                    }
+		                    if (args.length == 2) {
+		                    	
+		                    	try {
+		                        	
+		                            Player target = Bukkit.getServer().getPlayer(args[1]);
+		                            
+		                            if (getConfig().getBoolean("Players." + target.getName() + ".muted")) {
+
+				                        getConfig().set("Players." + target.getName() + ".muted", false);
+		                            	saveConfig();
+		                            	target.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                target.sendMessage((new StringBuilder().append(ChatColor.GREEN).append("You can chat again!")).toString());
+		                                
+		                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                player.sendMessage((new StringBuilder().append(ChatColor.GREEN).append(target.getName() + " is can chat again!")).toString());
+		                            } else {
+		                            	
+		                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                player.sendMessage((new StringBuilder().append(ChatColor.GREEN).append(target.getName() + " is not muted!")).toString());
+		                            }
+		                        } catch(NullPointerException ex) {
+		                        	
+		                            player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                            player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Please enter a valid player name!").toString());
+		                        }
+		                    }
+		                    if (args.length >= 3) {
+		
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("To many arguments!").toString());
+		                    }
+	                	} else {
+	                		
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You don't have permissions to use this command!").toString());
+	                	}
+	                }
+	                
+/** ENABLE OR DISABLE PREFIX IN CHAT */
+	                
+	                if(args[0].equalsIgnoreCase("prefix")) {
+	                	
+	                	if (player.hasPermission("vanillachatter.admin.prefix") || player.isOp()) {
+	                	
+		                    if(args.length == 1) {
+		                    	
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Missing: ").append(ChatColor.GREEN).append("/vc prefix ").append(ChatColor.UNDERLINE).append("<true/false>").toString());
+		                    }
+		                    if (args.length == 2) {
+		                    	
+		                    	boolean isboolean = getConfig().getBoolean("Enable Prefix");
+		                    	
+		                    	if (args[1].equalsIgnoreCase("true")) {
+		                    		
+		                    		if (isboolean == true) {
+
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Prefixes are already Enabled!").toString());
+		                    		}
+		                    		if (isboolean == false) {
+
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You have Enabled the Prefixes!").toString());
+				                        
+				                        getConfig().set("Enable Prefix", true);
+				                        saveConfig();
+		                    		}
+		                    	}
+		                    	if (args[1].equalsIgnoreCase("false")) {
+
+		                    		if (isboolean == false) {
+		                    			
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Prefixes are already Disabled!").toString());
+		                    		}
+		                    		if (isboolean == true) {
+
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+				                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You have Disabled the Prefixes!").toString());
+
+				                        getConfig().set("Enable Prefix", false);
+				                        saveConfig();
+		                    		}
+		                    	}
+		                    }
+		                    if (args.length >= 3) {
+		
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("To many arguments!").toString());
+		                    }
+	                	} else {
+	                		
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You don't have permissions to use this command!").toString());
+	                	}
+	                }
+	                if(args[0].equalsIgnoreCase("set")) {
+	                	
+                        if(args.length == 1) {
+                        	
+                            player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                            player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Missing: ").append(ChatColor.GREEN).append("/vc set ").append(ChatColor.UNDERLINE).append("<player>").append(ChatColor.RESET).append(ChatColor.GREEN).append(" ").append(ChatColor.UNDERLINE).append("<c:|p:|n:>").toString());
+                        }
+                        if(args.length == 2) {
+                        	
+                            player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                            player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Missing: ").append(ChatColor.GREEN).append("/vc set <player> ").append(ChatColor.UNDERLINE).append("<c:|p:|n:>").toString());
+                        }
+                        if(args.length >= 3) {
+                        	
+                            try {
+                            	
+                                Player target = Bukkit.getServer().getPlayer(args[1]);
+                        		
+                        		String message = args[2];
+                            	
+                            	if (message.contains("c:")) {
+                            		
+                            		if (player.hasPermission("vanillachatter.admin.setcolor") || player.hasPermission("vanillachatter.admin.set") || player.isOp()) {
+                            		
+	                            		message = message.replace("c:", "");
+	                            		
+	                            		try {
+		                                	
+		                                    int color = Integer.parseInt(message);
+		                                    if(color <= 6) {
+		                                    	
+		                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		                                        player.sendMessage((new StringBuilder().append(vanillachatter)).append(ChatColor.GRAY).append(" - ").append(ChatColor.GREEN).append("Player: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.GREEN).append(" Now has the colors: ").append(getcolors(color)).toString());
+		                                        getConfig().set("Players." + target.getName() + ".option", color);
+		                                        saveConfig();
+		                                    } else {
+		                                    	
+		                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+		                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Please enter a number from 1 to 6!").toString());
+		                                    }
+		                                } catch (NumberFormatException ex) {
+		                                	
+		                                	message = message.replace("c:", "");
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Could not find the Number: " + message).toString());
+		                                }
+                            		} else {
+	                                	
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You have no permissions to use this command!").toString());
+                            		}
+                            	} else if (args[2].contains("p:")) {
+                            		
+                            		if (player.hasPermission("vanillachatter.admin.setprefix") || player.hasPermission("vanillachatter.admin.set") || player.isOp()) {
+	                            		
+                            			message = message.replace("p:", "");
+	                            		
+	                            		StringBuilder Prefix = new StringBuilder();
+	                                	
+	                                	if (message.length() <= 10) {
+	                                		
+	        		                        for(int arg = 0; arg < message.length(); arg++) {
+	        		                        	
+	        		                        	if (arg == 0) {
+	        		                        		
+	        		                        		Prefix.append(message.toUpperCase().charAt(arg)).trimToSize();
+
+	        		                        	} else {
+	        		                        		
+	        		                        		Prefix.append(message.toLowerCase().charAt(arg)).trimToSize();
+	        		                        	}
+	        		                        }
+	                                		
+	        		                        if (Prefix.toString().contains("None")) {
+	        		                        	
+	        		                        	if (getConfig().getString("Players." + player.getName() + ".prefix").isEmpty()) {
+
+	                                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                                                player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("The Prefix of: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.RED).append(" was already deleted!").toString());
+	        		                        	} else {
+	        		                        		
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You deleted the Prefix of: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.GREEN).append("!").toString());
+	    	                                        getConfig().set("Players." + target.getName() + ".prefix", "");
+	        		                        	}
+	        		                        } else {
+	    	    		                        
+	        		                        	if (getConfig().getString("Players." + player.getName() + ".prefix").equalsIgnoreCase(Prefix.toString())) {
+
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("The Prefix of: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.RED).append(" was already changed to: ").append(getpref(Prefix.toString())).toString());
+	        		                        	} else {
+		    	                                    
+	        		                        		player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+		    	                                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("The Prefix for: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.GREEN).append(" is now: ").append(getpref(Prefix.toString())).toString());
+		    	                                    getConfig().set("Players." + target.getName() + ".prefix", Prefix.toString());
+	        		                        	}
+	        		                        }
+	                                	} else if (args[2].length() > 10) {
+
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Prefix can have max. 10 letters/numbers!").toString());
+	                                	}
+	                                	saveConfig();
+                            		} else {
+	                                	
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You have no permissions to use this command!").toString());
+                            		}
+                            	} else if (args[2].contains("n:")) {
+                            		
+                            		if (player.hasPermission("vanillachatter.admin.setnick") || player.hasPermission("vanillachatter.admin.set") || player.isOp()) {
+	                            		
+                            			message = message.replace("n:", "");
+	                            		
+	                            		StringBuilder Prefix = new StringBuilder();
+	                                	
+	                                	if (message.length() <= 10) {
+	                                		
+	        		                        for(int arg = 0; arg < message.length(); arg++) {
+	        		                        	
+	        		                        	if (arg == 0) {
+	        		                        		
+	        		                        		Prefix.append(message.toUpperCase().charAt(arg)).trimToSize();
+
+	        		                        	} else {
+	        		                        		
+	        		                        		Prefix.append(message.toLowerCase().charAt(arg)).trimToSize();
+	        		                        	}
+	        		                        }
+	                                		
+	        		                        if (Prefix.toString().contains("None")) {
+	        		                        	
+	        		                        	if (getConfig().getString("Players." + player.getName() + ".nick").isEmpty()) {
+
+	                                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                                                player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("The Nickname of: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.RED).append(" is already deleted!").toString());
+	        		                        	} else {
+	        		                        		
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+	    	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("You deleted the Nickname of: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.GREEN).append("!").toString());
+	    	                                        getConfig().set("Players." + target.getName() + ".nick", "");
+	        		                        	}
+	        		                        } else {
+	    	    		                        	
+	    	                                    player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+	    	                                    player.sendMessage((new StringBuilder()).append(ChatColor.GREEN).append("The Nickname for: ").append(ChatColor.LIGHT_PURPLE).append(target.getName()).append(ChatColor.GREEN).append(" is now: ").append(getpref(Prefix.toString())).toString());
+	    	                                    getConfig().set("Players." + target.getName() + ".nick", Prefix.toString());
+	        		                        }
+	                                	} else if (args[2].length() > 10) {
+
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+	                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Nickname can have max. 10 letters/numbers!").toString());
+	                                	}
+	                                	saveConfig();
+                            		} else {
+	                                	
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                                        player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("You have no permissions to use this command!").toString());
+                            		}
+                            	} else {
+
+                                    player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                                    player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Could not find the Parameter!").toString());
+                            	}
+                                
+                            } catch(NullPointerException ex) {
+                        	
+                                player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                                player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("Please enter a valid player name!").toString());
+                            }
+                        }
+                        if(args.length >= 5) {
+                        	
+                            player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.RED).append(" ERROR").append(ChatColor.GRAY).append("-+").toString());
+                            player.sendMessage((new StringBuilder()).append(ChatColor.RED).append("To many arguments!").toString());
+                        }
+	                }
+            	}
+            }
+        }
+		return false;
+	}
+    
+/** REGISTER THE PLAYER WHEN JOIN */
+	
+	@EventHandler
+	public void onJoin(PlayerJoinEvent event) {
+		
+		Player player = event.getPlayer();
+		
+		if (!getConfig().getConfigurationSection("Players." + player.getName()).getKeys(true).contains("muted")) {
+
+			getConfig().set("Players." + player.getName() + ".muted", false);
+		}
+		if (!getConfig().getConfigurationSection("Players." + player.getName()).getKeys(true).contains("option")) {
+
+			getConfig().set("Players." + player.getName() + ".option", 1);
+		}
+		if (!getConfig().getConfigurationSection("Players." + player.getName()).getKeys(true).contains("prefix")) {
+
+			getConfig().set("Players." + player.getName() + ".prefix", "newb");
+		}
+		if (!getConfig().getConfigurationSection("Players." + player.getName()).getKeys(true).contains("nick")) {
+
+			getConfig().set("Players." + player.getName() + ".nick", "");
+		}
+		
+		saveConfig();
+	}
+	
+	public void checkplayers() {
+		
+		for (Player p : Bukkit.getOnlinePlayers()) {
+			
+			if (!getConfig().getConfigurationSection("Players." + p.getName()).getKeys(true).contains("muted")) {
+
+				getConfig().set("Players." + p.getName() + ".muted", false);
+			}
+			if (!getConfig().getConfigurationSection("Players." + p.getName()).getKeys(true).contains("option")) {
+
+				getConfig().set("Players." + p.getName() + ".option", 1);
+			}
+			if (!getConfig().getConfigurationSection("Players." + p.getName()).getKeys(true).contains("prefix")) {
+
+				getConfig().set("Players." + p.getName() + ".prefix", "newb");
+			}
+			if (!getConfig().getConfigurationSection("Players." + p.getName()).getKeys(true).contains("nick")) {
+
+				getConfig().set("Players." + p.getName() + ".nick", "");
+			}
+		}
+		
+		saveConfig();
+	}
+    
+/** SET THE PREFIX COLORS */
+	
+    public String getpref(String pref) {
+    	
+    	String sendmessage = "";
+    	sendmessage = ChatColor.YELLOW + "[" + ChatColor.WHITE + pref + ChatColor.YELLOW + "]";
+        return sendmessage;
+    }
+    
+/** SET THE COLOR WITH THE PLAYER */
+	
+	public String getpcolor(int number, String playername) {
+		
+		String sendmessage = "";
+		
+		switch(number) {
+
+		//darkgray
+		case 1:
+			sendmessage = ChatColor.DARK_GRAY + "[" + playername + "]:";
+			break;
+		//gold
+		case 2:
+			sendmessage = ChatColor.GOLD + "[" + playername + "]:";
+			break;
+		//cyan
+		case 3:
+			sendmessage = ChatColor.DARK_AQUA + "[" + playername  + "]:";
+			break;
+		//darkgreen
+		case 4:
+			sendmessage = ChatColor.DARK_GREEN + "[" + playername + "]:";
+			break;
+		//purple
+		case 5:
+			sendmessage = ChatColor.DARK_PURPLE + "[" + playername + "]:";
+			break;
+		//red
+		case 6:
+			sendmessage = ChatColor.DARK_RED + "[" + playername + "]:";
+			break;
+		//white
+		default:
+			sendmessage = ChatColor.WHITE + "[" + playername + "]:";
+			break;
+		}
+		return sendmessage;
+	}
+    
+/** SET THE NICK WITH THE PLAYER */
+	
+	public String getnickcolor(int number, String playername) {
+		
+		String sendmessage = "";
+		
+		switch(number) {
+
+		//darkgray
+		case 1:
+			sendmessage = ChatColor.DARK_GRAY + ">[" + playername + "]:";
+			break;
+		//gold
+		case 2:
+			sendmessage = ChatColor.GOLD + ">[" + playername + "]:";
+			break;
+		//cyan
+		case 3:
+			sendmessage = ChatColor.DARK_AQUA + ">[" + playername  + "]:";
+			break;
+		//darkgreen
+		case 4:
+			sendmessage = ChatColor.DARK_GREEN + ">[" + playername + "]:";
+			break;
+		//purple
+		case 5:
+			sendmessage = ChatColor.DARK_PURPLE + ">[" + playername + "]:";
+			break;
+		//red
+		case 6:
+			sendmessage = ChatColor.DARK_RED + ">[" + playername + "]:";
+			break;
+		//white
+		default:
+			sendmessage = ChatColor.WHITE + ">[" + playername + "]:";
+			break;
+		}
+		return sendmessage;
+	}
+    
+/** SET THE MESSAGE COLORS */
+	
+	public String getmcolor(int number, String message) {
+		
+		String sendmessage = "";
+		
+		switch(number) {
+
+		//gray
+		case 1:
+			sendmessage = ChatColor.GRAY + message;
+			break;
+		//yellow
+		case 2:
+			sendmessage = ChatColor.YELLOW + message;
+			break;
+		//aqua
+		case 3:
+			sendmessage = ChatColor.AQUA + message;
+			break;
+		//green
+		case 4:
+			sendmessage = ChatColor.GREEN + message;
+			break;
+		//pink
+		case 5:
+			sendmessage = ChatColor.LIGHT_PURPLE + message;
+			break;
+		//red
+		case 6:
+			sendmessage = ChatColor.RED + message;
+			break;
+		//white
+		default:
+			sendmessage = ChatColor.WHITE + message;
+			break;
+		}
+		return sendmessage;
+	}
+    
+/** GET THE CHAT EVENT */
+	
+	@EventHandler
+	public void onChat(AsyncPlayerChatEvent event) {
+		
+        Player player = event.getPlayer();
+		if (getConfig().getBoolean("Players." + player.getName() + ".muted")) {
+			
+        	player.sendMessage((new StringBuilder()).append(ChatColor.GRAY).append("+-").append(vanillachatter).append(ChatColor.GREEN).append(" INFO").append(ChatColor.GRAY).append("-+").toString());
+        	player.sendMessage((new StringBuilder().append(ChatColor.GREEN).append("You are muted!")).toString());
+			event.setCancelled(true);
+		}
+        String message = event.getMessage();
+        String playername = player.getName();
+        
+        int color = getConfig().getInt((new StringBuilder("Players.")).append(player.getName().toLowerCase()).append(".option").toString());
+        String Prefix = getConfig().getString("Players." + playername + ".prefix");
+        String format = "<prefix><name> <message>";
+        
+        if(getConfig().getBoolean("Enable Prefix")) {
+        	
+        	if (getConfig().getString("Players." + playername + ".prefix").isEmpty()) {
+
+                format = format.replace("<prefix>", "");
+        	} else {
+            	
+        		format = format.replace("<prefix>", getpref(Prefix));
+            }
+        	if (getConfig().getString("Players." + playername + ".nick").isEmpty()) {
+
+                format = format.replace("<name>", getpcolor(color, playername));
+        	} else {
+
+        		format = format.replace("<name>", getnickcolor(color, getConfig().getString("Players." + playername + ".nick")));
+        	}
+        } else {
+        	
+            format = format.replace("<prefix>", "");
+        }
+        format = format.replace("<message>", getmcolor(color, message));
+        event.setFormat(format);
+    }
+}

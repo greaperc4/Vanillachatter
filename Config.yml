@@ -1,8 +1,0 @@
-Enable Prefix: true
-
-Players:
-  greaperc4:
-    muted: false
-    option: 3
-    prefix: Developer
-    nick: ''
